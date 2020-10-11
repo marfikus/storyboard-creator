@@ -31,6 +31,10 @@ def extract_frames(filepath, num_frames):
     # получаем количество кадров, с которых будем делать раскадровку
     frame_count = total_frame_count - offset_frames * 2
 
+    if num_frames > frame_count:
+        print("num_frames > frame_count")
+        return
+
     # получаем шаг извлечения кадров
     # (-1 для более равномерного распределения)
     frame_step = frame_count // (num_frames - 1)
@@ -74,6 +78,10 @@ def create_frame_grid(frames, frames_in_row):
 
     if frames_in_row <= 0:
         print("Incorrect value of frames_in_row:", frames_in_row)
+        return
+
+    if frames_in_row > len(frames):
+        print("frames_in_row > len(frames)")
         return
 
     # если сетка получается несимметричная
@@ -147,7 +155,7 @@ def data_processing(input_file_path, output_file_path):
     output_data = []
     for filepath in filepath_list:
         print(filepath)
-        frames = extract_frames(filepath, 16)
+        frames = extract_frames(filepath, num_frames=16)
         # если извлечь кадры не получилось, то пропускаем этот файл
         # (не заносим в результат)
         if frames is None:
@@ -160,7 +168,7 @@ def data_processing(input_file_path, output_file_path):
         image_path = os.path.normpath(image_path)
 
         # создание сетки фреймов 4х4
-        frame_grid = create_frame_grid(frames, 4)
+        frame_grid = create_frame_grid(frames, frames_in_row=4)
 
         # если сетка создалась, то сохраняем, иначе пропускаем итерацию
         if not frame_grid is None:
